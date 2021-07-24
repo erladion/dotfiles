@@ -1,0 +1,8 @@
+[:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(27,32,34)'
+bold-is-bright=false
+font='Cascadia Mono PL 9'
+foreground-color='rgb(211,215,207)'
+palette=['rgb(46,52,54)', 'rgb(230,39,39)', 'rgb(89,158,23)', 'rgb(175,213,23)', 'rgb(171,109,20)', 'rgb(117,80,123)', 'rgb(48,172,173)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(187,32,32)', 'rgb(116,207,29)', 'rgb(210,255,32)', 'rgb(223,141,23)', 'rgb(173,127,168)', 'rgb(59,223,225)', 'rgb(238,238,236)']
+use-system-font=false
+use-theme-colors=false
