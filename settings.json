@@ -49,12 +49,6 @@
                 "name": "Command Prompt"
             },
             {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
                 "colorScheme": "Tango Dark",
                 "cursorShape": "underscore",
                 "fontFace": "Cascadia Mono",
@@ -205,6 +199,29 @@
             "selectionBackground": "#FFFFFF",
             "white": "#EEE8D5",
             "yellow": "#B58900"
+        },
+        {
+            "background": "#1B2022",
+            "black": "#2E3436",
+            "blue": "#AB6D14",
+            "brightBlack": "#555753",
+            "brightBlue": "#DF8D17",
+            "brightCyan": "#3BDFE1",
+            "brightGreen": "#74CF1D",
+            "brightPurple": "#AD7FA8",
+            "brightRed": "#BB2020",
+            "brightWhite": "#EEEEEC",
+            "brightYellow": "#D2FF20",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#30ACAD",
+            "foreground": "#D3D7CF",
+            "green": "#599E17",
+            "name": "Custom",
+            "purple": "#75507B",
+            "red": "#E62727",
+            "selectionBackground": "#FFFFFF",
+            "white": "#D3D7CF",
+            "yellow": "#AFD517"
         },
         {
             "background": "#000000",
