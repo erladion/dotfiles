@@ -1,4 +1,5 @@
 #!/usr/bin/fish
+## Figure out which package manager is used
 if type -q dnf
     set -gx packagemanager "dnf"
     set -gx packagecommand "sudo $packagemanager install"
@@ -12,8 +13,49 @@ else
     #set -gx packagemanager "Unknown"
 end
 
+function setupQtCreator
+    if ! test $argv/QtProject 
+        echo "QtCreator is not installed, ignoring QtCreator settings"
+    else
+        set QTPATH $argv/QtProject/qtcreator/
+        mkdir -p $QTPATH/styles
+        mkdir -p $QTPATH/themes
+
+        cp QtCreator/styles/visualstudio.xml $QTPATH/styles/
+        cp QtCreator/themes/flat-dark.creatortheme $QTPATH/themes/
+    end
+end
+
+function setupFonts
+    echo "Setting up fonts!"
+    git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
+    cd nerd-fonts
+    echo "Installing CascadiaCode"
+    if test $WSLPATH
+        powershell.exe -ExecutionPolicy Bypass -F install.ps1 CascadiaCode
+    else
+        ./install.sh CascadiaCode
+    end
+end
+
 function installrust
     curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+    echo "set -px PATH ~/.cargo/bin" >> ~/.config/fish/config.fish
+    source ~/.config/fish/config.fish
+end
+
+function setupbat
+    if ! type -q cargo
+        echo "Rust is not installed, installing it now"
+        installrust
+    end
+
+    if ! type -q bat
+        echo "lsd is not installed, installing"
+        cargo install bat
+    else
+        echo "bat is already installed"
+    end
 end
 
 function setuplsd
@@ -28,7 +70,6 @@ function setuplsd
     else
         echo "lsd is already installed"
     end
-    
 end
 
 function setuptmux
@@ -45,13 +86,17 @@ function setupomf
         # TODO: Disgusting, fix this.
         set choice (omf theme | string escape --style=regex | string replace -r '(.+Installed:)(.+)' '$2' | string replace -r '(.+Available:)(.+)' '$2' | string replace -a -r '[\\\]' '' | string replace -a -r "[[:blank:]]+" " " | string escape --style=regex | tr -d '[m' | tr -d '(B' | string split " " | string unescape | sort -u -r | fzf --preview-window=up:5% --preview="cat themechoice.txt")
 
-        echo "Installing $choice"
-        omf install $choice
+        if test (omf theme | grep "Installed" -A 2 | grep $choice)
+            echo "$choice is already installed"
+        else 
+            echo "Installing $choice"
+            omf install $choice
 
-	if test -e ~/.config/fish/functions/fish_prompt.fish
-            rm ~/.config/fish/functions/fish_prompt.fish
-	end
-        omf reload
+            if test -e ~/.config/fish/functions/fish_prompt.fish
+                    rm ~/.config/fish/functions/fish_prompt.fish
+            end
+            omf reload
+        end
     end
 
     if ! type -q omf
@@ -88,30 +133,45 @@ function setupfzf
     end
 end
 
+function checkPackageManager
+    if test -n "$packagemanager"
+        echo "Found package manager: $packagemanager"
+    else 
+        echo "Unknown package manager, aborting!"
+        exit 1
+    end
+end
+
+function setupComponents
+    setuptmux
+    setupfzf
+    setupomf
+    setupbat
+    setuplsd
+    setupFonts
+end
+
+set DISTRO (cat /etc/*-release | grep 'DISTRIB_DESCRIPTION' | cut -d '=' -f 2 | tr -d '"')
 if ! type -q wslpath 
-    echo "Setting up Linux"
-else
-    echo "Setting up WSL"
+    echo "Setting up Linux ($DISTRO)"
+
+    checkPackageManager
+    setupComponents
+    # Setup fish config/functions
+    #cp config.fish /home/$USER/.config/fish/
+    #cp tmuxs.fish /home/$USER/.config/fish/functions/
+    setupQtCreator ~
+else    
+    echo "Setting up WSL ($DISTRO)"
     set WSLPATH (wslpath (wslvar USERPROFILE))
     echo "User profile path:" $WSLPATH
     echo "Setting up Windows Terminal settings"
     # TODO: Uncomment this line when the settings.json file is good
     #cp settings.json $WSLPATH/AppData/Local/Packages/Microsoft.WindowsTerminal*/
+    checkPackageManager
+    setupComponents
+    #setupQtCreator $WSLPATH/AppData/Roaming
 end
-
-if test -n "$packagemanager"
-    echo "Found package manager: $packagemanager"
-    setuptmux
-    setupfzf
-    setupomf
-    setuplsd
-else 
-    echo "Unknown package manager, aborting!"
-end
-
-# Setup fish config/functions
-#cp config.fish /home/$USER/.config/fish/
-#cp tmuxs.fish /home/$USER/.config/fish/functions/
 
 ## Color settings
 # "background": "#1B2022"
