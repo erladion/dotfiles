@@ -1,1 +1,1 @@
-# terminal-configs
+# dotfiles
