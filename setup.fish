@@ -5,18 +5,19 @@ if type -q dnf
     set -gx packagecommand "sudo $packagemanager install"
 else if type -q pacman
     set -gx packagemanager "pacman"
-    set -gx packagecommand "sudo $packagemanager install"
+    set -gx packagecommand "sudo $packagemanager -S"
 else if type -q apt
     set -gx packagemanager "apt"
-    set -gx packagecommand "sudo $packagemanager install"
+    set -gx packagecommand "sudo $packagemanager-get install"
 else
     #set -gx packagemanager "Unknown"
 end
 
-function setupQtCreator
+function setupqtcreator
     if ! test $argv/QtProject 
         echo "QtCreator is not installed, ignoring QtCreator settings"
     else
+        echo "Setting up Qtcreator"
         set QTPATH $argv/QtProject/qtcreator/
         mkdir -p $QTPATH/styles
         mkdir -p $QTPATH/themes
@@ -26,7 +27,7 @@ function setupQtCreator
     end
 end
 
-function setupFonts
+function setupfonts
     echo "Setting up fonts!"
     git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git
     cd nerd-fonts
@@ -72,10 +73,34 @@ function setuplsd
     end
 end
 
+function setupalacritty
+    function setupalacrittyconfig
+        mkdir -p ~/.config/alacritty
+        cp alacritty/alacritty.yml ~/.config/alacritty
+        cp alacritty/Alacritty.desktop ~/.local/share/applications/
+    end
+    
+    if ! type -q cargo
+        echo "Rust is not installed, installing it now"
+        installrust
+    end
+
+    if ! type -q alacritty
+        cargo install alacritty
+    else
+        echo "alacritty is already installed"
+    end
+
+    if ! test -e ~/.config/alacritty/alacritty.yml
+        echo "Setting up alacritty config files"
+        setupalacrittyconfig
+    end
+end
+
 function setuptmux
     if ! type -q tmux
         echo "Installing tmux"
-        $packagecommand tmux
+        yes | $packagecommand tmux
     else
         echo "tmux is already installed"
     end
@@ -118,6 +143,16 @@ function setupomf
     end
 end
 
+function setupfisher
+    if ! type -q fisher
+        echo "fisher is not setup"
+        curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    else 
+        echo "fisher is already installed"
+    end
+    
+end
+
 function setupfzf
     function installfzf
         echo "Installing fzf"
@@ -128,6 +163,7 @@ function setupfzf
     if ! type -q fzf
         echo "fzf is not setup"
         installfzf
+        setupfisher
     else
         echo "fzf is already installed"
     end
@@ -143,12 +179,13 @@ function checkPackageManager
 end
 
 function setupComponents
-    setuptmux
-    setupfzf
-    setupomf
-    setupbat
-    setuplsd
-    setupFonts
+    #setuptmux
+    #setupfzf
+    #setupomf
+    #setupbat
+    #setuplsd
+    #setupfonts
+    #setupalacritty
 end
 
 set DISTRO (cat /etc/*-release | grep 'DISTRIB_DESCRIPTION' | cut -d '=' -f 2 | tr -d '"')
@@ -160,7 +197,7 @@ if ! type -q wslpath
     # Setup fish config/functions
     #cp config.fish /home/$USER/.config/fish/
     #cp tmuxs.fish /home/$USER/.config/fish/functions/
-    setupQtCreator ~
+    setupqtcreator ~/.config
 else    
     echo "Setting up WSL ($DISTRO)"
     set WSLPATH (wslpath (wslvar USERPROFILE))
@@ -170,7 +207,7 @@ else
     #cp settings.json $WSLPATH/AppData/Local/Packages/Microsoft.WindowsTerminal*/
     checkPackageManager
     setupComponents
-    #setupQtCreator $WSLPATH/AppData/Roaming
+    #setupqtcreator $WSLPATH/AppData/Roaming
 end
 
 ## Color settings

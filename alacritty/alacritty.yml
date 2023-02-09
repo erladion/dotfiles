@@ -1,0 +1,150 @@
+env:
+  TERM: xterm-256color
+  WINIT_X11_SCALE_FACTOR: "1"
+
+window:
+  #dimensions:
+  #  columns: 80
+  #  lines: 24
+
+  padding:
+    x: 5
+    y: 5
+
+  dpi:
+    x: 96.0
+    y: 96.0
+
+  dynamic_padding: false
+
+  decorations: full
+
+  startup_mode: Windowed
+
+  dynamic_title: true
+
+scrolling:
+  history: 2500
+  multiplier: 3
+
+font:
+  normal:
+    family: CaskaydiaCove Nerd Font
+    style: Regular
+
+  bold:
+    family: CaskaydiaCove Nerd Font
+    style: Bold
+
+  italic:
+    family: CaskaydiaCove Nerd Font
+    style: Italic
+
+  bold_italic:
+    family: CaskaydiaCove Nerd Font
+    style: Bold Italic
+
+  size: 8
+
+  offset:
+    x: 0
+    y: 0
+
+  glyph_offset:
+    x: 0
+    y: 0
+
+draw_bold_text_with_bright_colors: true
+
+# Oxide colors
+colors:
+  primary:
+    background: '#1b2022'
+    foreground: '#d3d7cf'
+    bright_foreground: '#f3f4f5'
+
+  cursor:
+    text: '#212121'
+    cursor: '#1dd2af'
+
+  normal:
+    black:   '#2e3436'
+    red:     '#e62727'
+    green:   '#599e17'
+    yellow:  '#afd517'
+    blue:    '#ab6d14'
+    magenta: '#75507b'
+    cyan:    '#30acad'
+    white:   '#d3d7cf'
+
+  bright:
+    black:   '#555753'
+    red:     '#bb2020'
+    green:   '#74cf1d'
+    yellow:  '#d2ff20'
+    blue:    '#df8d17'
+    magenta: '#ad7fa8'
+    cyan:    '#3bdfe1'
+    white:   '#eeeeec'
+
+  indexed_colors: []
+
+bell:
+  animation: EaseOutExpo
+  duration: 0
+  color: '#ffffff'
+
+background_opacity: 1.0
+
+selection:
+  semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+  save_to_clipboard: false
+
+cursor:
+  style: Underline
+  vi_mode_style: None
+  unfocused_hollow: true
+  thickness: 0.15
+
+live_config_reload: false
+
+working_directory: None
+
+alt_send_esc: true
+
+mouse:
+  double_click: { threshold: 300 }
+  triple_click: { threshold: 300 }
+
+  hide_when_typing: false
+
+mouse_bindings:
+  - { mouse: Middle, action: PasteSelection }
+
+key_bindings:
+  - { key: Paste,                                         action: Paste            }
+  - { key: Copy,                                          action: Copy             }
+  - { key: L,              mods: Control,                 action: ClearLogNotice   }
+  - { key: L,              mods: Control, mode: ~Vi,      chars: "\x0c"            }
+  - { key: PageUp,         mods: Shift,   mode: ~Alt,     action: ScrollPageUp,    }
+  - { key: PageDown,       mods: Shift,   mode: ~Alt,     action: ScrollPageDown   }
+  - { key: Home,           mods: Shift,   mode: ~Alt,     action: ScrollToTop,     }
+  - { key: End,            mods: Shift,   mode: ~Alt,     action: ScrollToBottom   }
+  - { key: V,              mods: Control|Shift,           action: Paste            }
+  - { key: C,              mods: Control|Shift,           action: Copy             }
+  - { key: F,              mods: Control|Shift,           action: SearchForward    }
+  - { key: B,              mods: Control|Shift,           action: SearchBackward   }
+  - { key: C,              mods: Control|Shift, mode: Vi, action: ClearSelection   }
+  - { key: Insert,         mods: Shift,                   action: PasteSelection   }
+  - { key: Key0,           mods: Control,                 action: ResetFontSize    }
+  - { key: Equals,         mods: Control,                 action: IncreaseFontSize }
+  - { key: Plus,           mods: Control,                 action: IncreaseFontSize }
+  - { key: NumpadAdd,      mods: Control,                 action: IncreaseFontSize }
+  - { key: Minus,          mods: Control,                 action: DecreaseFontSize }
+  - { key: NumpadSubtract, mods: Control,                 action: DecreaseFontSize }
+
+debug:
+  render_timer: false
+  persistent_logging: false
+  log_level: Warn
+  print_events: false
